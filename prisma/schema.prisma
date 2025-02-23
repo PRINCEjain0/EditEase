@@ -7,11 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user{
-  id Int @id @default(autoincrement())
-  clerkId String @unique
-  email String @unique
-  name String
-  imageUrl String?
+model user {
+  id        String  @id @unique
+  clerkId   String  @unique
+  email     String  @unique
+  name      String
+  imageUrl  String?
   createdAt DateTime @default(now())
+
+}
+
+model Image {
+  id          String  @id @default(uuid())
+  userId      String  
+  originalUrl String  
+  editedUrl   String? 
+  prompt      String? 
+  createdAt   DateTime @default(now())
+
 }
