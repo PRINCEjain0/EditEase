@@ -3,21 +3,34 @@ import prisma from "@/lib/prisma";
 import { getAuth } from "@clerk/nextjs/server";
 
 export async function POST(req) {
-  const { userId } = getAuth(req);
-  console.log(userId);
-  if (!userId) {
+  const { userId: clerkId } = getAuth(req);
+  console.log(clerkId);
+
+  if (!clerkId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { originalUrl, prompt } = await req.json();
+
   if (!originalUrl) {
     return NextResponse.json(
       { error: "No image URL provided" },
       { status: 400 }
     );
   }
+
   console.log(originalUrl);
   console.log(prompt);
+
+  const user = await prisma.user.findUnique({
+    where: { clerkId },
+    select: { id: true },
+  });
+
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
   const editedUrl = `https://res.cloudinary.com/${
     process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
   }/image/upload/e_gen_remove:prompt_${prompt};multiple_true/${originalUrl
@@ -25,17 +38,18 @@ export async function POST(req) {
     .pop()}`;
 
   console.log(editedUrl);
+
   try {
     console.log("Database Insert Payload:", {
-      userId,
+      userId: user.id,
       originalUrl,
       editedUrl,
       prompt,
     });
 
-    const image = await prisma.Image.create({
+    const image = await prisma.image.create({
       data: {
-        userId,
+        userId: user.id,
         originalUrl,
         editedUrl,
         prompt,

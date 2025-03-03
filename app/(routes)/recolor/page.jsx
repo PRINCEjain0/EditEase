@@ -1,88 +1,97 @@
 "use client";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Upload, Download, Wand2 } from "lucide-react";
 import { useState } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 
-export default function ObjectRemovePage() {
-  const [prompt, setPrompt] = useState("");
-  const [originalUrl, setOriginalUrl] = useState(null);
-  const [editedUrl, setEditedUrl] = useState(null);
+export default function RecolorPage() {
+  const [imageUrl, setImageUrl] = useState(null);
+  const [text, setText] = useState("");
+  const [color, setColor] = useState("");
 
-  const handleUpload = (result) => {
-    const uploadedUrl = result.info.secure_url;
-    setOriginalUrl(uploadedUrl);
-    setEditedUrl(null);
-  };
-
-  const applyTransformation = async () => {
-    if (!originalUrl || !prompt) {
-      alert("Please enter a prompt and upload an image.");
-      return;
-    }
-
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ originalUrl, prompt }),
-    });
-
-    const data = await res.json();
-    console.log(data);
-    console.log(data.image.editedUrl);
-    setEditedUrl(data.image.editedUrl);
+  const handleTranformation = () => {
+    console.log("Transforming");
   };
 
   return (
-    <div className="flex gap-8 p-8">
-      <div className="w-1/2 flex flex-col items-center gap-4">
-        <input
-          type="text"
-          placeholder="Enter transformation prompt..."
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          className="border p-2 w-full"
-        />
-
-        <CldUploadWidget uploadPreset="EditEase" onSuccess={handleUpload}>
-          {({ open }) => (
-            <button
-              onClick={() => open()}
-              className="bg-blue-500 text-white p-2 rounded"
-            >
-              Upload Image
-            </button>
-          )}
-        </CldUploadWidget>
-
-        {originalUrl && (
-          <img
-            src={originalUrl}
-            alt="Uploaded"
-            className="w-full max-w-xs mt-4"
-          />
-        )}
-
-        <button
-          onClick={applyTransformation}
-          className="bg-green-500 text-white p-2 rounded mt-4"
-        >
-          Apply Transformation
-        </button>
-      </div>
-
-      <div className="w-1/2 flex justify-center items-center border p-4">
-        {editedUrl ? (
-          <div>
-            <img
-              src={editedUrl}
-              alt="Transformed"
-              className="w-full max-w-xs"
+    <>
+      <div className="bg-gradient-to-br from-gray-900 to-black ">
+        <h1 className="pt-28 text-4xl font-bold text-transparent bg-clip-text text-center bg-gradient-to-r from-blue-400 to-purple-600">
+          Recolor Your Image
+        </h1>
+        <div className="flex justify-between items-center mt-8 px-40 space-x-8">
+          <div className="flex flex-col w-1/2">
+            <Label id="object" className="text-white text-xl mb-2">
+              Object to Recolor
+            </Label>
+            <Input
+              id="object "
+              placeholder="eg car, sky, etc."
+              className="text-white w-full h-12"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
             />
-            <h>wbddju</h>
           </div>
-        ) : (
-          <p className="text-gray-500">Transformed image will appear here.</p>
-        )}
+
+          <div className="flex flex-col w-1/2">
+            <Label id="color" className="text-white text-xl mb-2">
+              New color
+            </Label>
+            <Input
+              id="color "
+              placeholder="eg car, sky, etc."
+              className=" text-white w-full h-12"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="flex items-center justify-center px-40 mt-8 space-x-52">
+          <div>
+            <h1 className="text-2xl text-white ">Original</h1>
+            <div className="border border-white w-96 h-72 mt-4 flex justify-center items-center">
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt="Uploaded"
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                <div className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition flex items-center">
+                  <Upload className="h-4 w-4" />
+                  <CldUploadWidget
+                    uploadPreset="EditEase"
+                    onSuccess={(result) => setImageUrl(result.info.secure_url)}
+                  >
+                    {({ open }) => (
+                      <button onClick={() => open()}>Upload an Image</button>
+                    )}
+                  </CldUploadWidget>
+                </div>
+              )}
+            </div>
+          </div>
+          <div>
+            <h1 className="text-2xl text-white ">Transformed</h1>
+            <div className="border border-white w-96 h-72 mt-4"></div>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center mt-8">
+          <Button
+            onClick={handleTranformation}
+            className="w-2/3 bg-blue-600 hover:bg-blue-700  mt-8"
+          >
+            <Wand2 className="mr-2 h-4 w-4" /> Apply Transformation
+          </Button>
+
+          <Button className="w-2/3 bg-purple-600 hover:bg-purple-700 mt-8 mb-12">
+            <Download className="mr-2 h-4 w-4" /> Download Result
+          </Button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

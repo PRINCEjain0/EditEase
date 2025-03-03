@@ -7,7 +7,7 @@ import {
 export default function navbar() {
   return (
     <>
-      <nav className="fixed w-full h-20 flex justify-between items-center bg-gray-900  shadow-lg">
+      <nav className="fixed top-0 left-0 w-full h-20 flex justify-between items-center bg-gray-900  shadow-lg">
         <div className="space-x-8 flex items-center">
           <a href="/" className="text-blue-400 ml-8 text-3xl font-bold">
             Edit Aura

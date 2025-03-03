@@ -19,9 +19,20 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import Link from "next/link";
+import { useEffect } from "react";
+import { useAuth } from "@clerk/nextjs";
+import { createUser } from "@/actions/userAction";
 
 export default function Home() {
+  const { isSignedIn } = useAuth();
+  useEffect(() => {
+    if (!isSignedIn) return;
+
+    async function addUse() {
+      const res = await createUser();
+    }
+    addUse();
+  }, [isSignedIn]);
   const transformationExamples = [
     {
       id: "recolor",
@@ -76,7 +87,7 @@ export default function Home() {
         <div className="max-w-5xl flex flex-col items-center">
           <motion.h1
             className="text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#4a90e2] to-[#a25af7]"
-            initial={{ opacity: 0, y: -50 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
           >
@@ -163,7 +174,9 @@ export default function Home() {
                 <div className="rounded-full bg-blue-900/50 p-4">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold">{feature.title}</h3>
+                <h3 className="text-xl font-bold text-white">
+                  {feature.title}
+                </h3>
                 <p className="text-gray-400">{feature.description}</p>
               </motion.div>
             ))}
@@ -261,8 +274,8 @@ export default function Home() {
       <section className="bg-black ">
         <div className="p-24">
           <motion.div
-            initital={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
             className="flex flex-col items-center justify-center text-center text-white"
           >
@@ -297,8 +310,8 @@ export default function Home() {
             ].map((step, index) => (
               <motion.div
                 key={index}
-                initital={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: index * 0.1 }}
                 className="flex flex-col items-center justify-center space-y-4
                 text-center"

@@ -8,13 +8,13 @@ datasource db {
 }
 
 model user {
-  id        String  @id @unique
+  id        String  @id @default(uuid())
   clerkId   String  @unique
   email     String  @unique
   name      String
   imageUrl  String?
   createdAt DateTime @default(now())
-
+  images    Image[]
 }
 
 model Image {
@@ -24,5 +24,5 @@ model Image {
   editedUrl   String? 
   prompt      String? 
   createdAt   DateTime @default(now())
-
+  user        user    @relation(fields: [userId], references: [id])
 }
