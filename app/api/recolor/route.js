@@ -1,29 +1,25 @@
-import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
 import { getAuth } from "@clerk/nextjs/server";
+import prisma from "@/lib/prisma";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  const { userId: clerkId } = getAuth(req);
-  console.log(clerkId);
+  const { userId } = getAuth(req);
 
-  if (!clerkId) {
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { originalUrl, prompt } = await req.json();
+  const { imageUrl, text, color } = await req.json();
 
-  if (!originalUrl) {
+  if (!imageUrl) {
     return NextResponse.json(
       { error: "No image URL provided" },
       { status: 400 }
     );
   }
 
-  console.log(originalUrl);
-  console.log(prompt);
-
   const user = await prisma.user.findUnique({
-    where: { clerkId },
+    where: { clerkId: userId },
     select: { id: true },
   });
 
@@ -33,32 +29,22 @@ export async function POST(req) {
 
   const editedUrl = `https://res.cloudinary.com/${
     process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-  }/image/upload/e_gen_remove:prompt_${prompt};multiple_true/${originalUrl
+  }/image/upload/e_gen_recolor:prompt_${text};to-color_${color};multiple_true/${imageUrl
     .split("/")
     .pop()}`;
 
-  console.log(editedUrl);
-
   try {
-    console.log("Database Insert Payload:", {
-      userId: user.id,
-      originalUrl,
-      editedUrl,
-      prompt,
-    });
-
     const image = await prisma.image.create({
       data: {
         userId: user.id,
-        originalUrl,
-        editedUrl,
-        prompt,
+        originalUrl: imageUrl,
+        editedUrl: editedUrl,
+        prompt: text,
       },
     });
 
     return NextResponse.json({ image });
   } catch (error) {
-    console.error("Database Error:", error);
     return NextResponse.json({ error: "Database error" }, { status: 500 });
   }
 }

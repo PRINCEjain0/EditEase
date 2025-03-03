@@ -25,8 +25,8 @@ export default function navbar() {
             <a href="/replace" className="text-white hover:text-blue-400">
               Replace
             </a>
-            <a href="/bgchange" className="text-white hover:text-blue-400">
-              BG change
+            <a href="/restore" className="text-white hover:text-blue-400">
+              Restore
             </a>
           </span>
         </div>

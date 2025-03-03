@@ -8,8 +8,6 @@ import { CldUploadWidget } from "next-cloudinary";
 
 export default function RecolorPage() {
   const [imageUrl, setImageUrl] = useState(null);
-  const [text, setText] = useState("");
-  const [color, setColor] = useState("");
   const [editedUrl, setEditedUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -18,18 +16,18 @@ export default function RecolorPage() {
   }, [imageUrl]);
 
   const handleTranformation = async () => {
-    if (!imageUrl || !text || !color) {
-      alert("Please enter a prompt and upload an image.");
+    if (!imageUrl) {
+      alert("Please upload an image.");
       return;
     }
 
-    setIsLoading(true);
+    setIsLoading(true); // Show loader before fetching
 
     try {
-      const res = await fetch("/api/replace", {
+      const res = await fetch("/api/restore", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageUrl, text, color }),
+        body: JSON.stringify({ imageUrl }),
       });
 
       if (!res.ok) {
@@ -59,36 +57,8 @@ export default function RecolorPage() {
   return (
     <div className="bg-gradient-to-br from-[#0a0f1e] to-[#111936] min-h-screen overflow-auto">
       <h1 className="pt-28 text-4xl font-bold text-transparent bg-clip-text text-center bg-gradient-to-r from-blue-400 to-purple-500">
-        Replace Objects in Your Image
+        Restore your Image
       </h1>
-
-      {/* Input Fields */}
-      <div className="flex justify-between items-center mt-8 px-40 space-x-8">
-        <div className="flex flex-col w-1/2">
-          <Label htmlFor="object" className="text-gray-300 text-xl mb-2">
-            Object to Replace
-          </Label>
-          <Input
-            id="object"
-            placeholder="e.g. car, sky, etc."
-            className="bg-[#0F3460] text-white w-full h-12 border border-gray-500"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-col w-1/2">
-          <Label htmlFor="color" className="text-gray-300 text-xl mb-2">
-            Replacement Object
-          </Label>
-          <Input
-            id="color"
-            placeholder="e.g. bus, land, etc."
-            className="bg-[#0F3460] text-white w-full h-12 border border-gray-500"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-          />
-        </div>
-      </div>
 
       <div className="flex items-center justify-center px-40 mt-8 space-x-52">
         {/* Original Image */}
