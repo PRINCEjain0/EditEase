@@ -40,11 +40,12 @@ export async function POST(req) {
         originalUrl: imageUrl,
         editedUrl: editedUrl,
         prompt: text,
+        transformationType: "Replace",
       },
     });
 
     return NextResponse.json({ image });
   } catch (error) {
-    return NextResponse.json({ error: "Database error" }, { status: 500 });
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }

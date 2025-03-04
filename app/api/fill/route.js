@@ -9,7 +9,7 @@ export async function POST(req) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { imageUrl } = await req.json();
+  const { imageUrl, aspectRatio } = await req.json();
 
   if (!imageUrl) {
     return NextResponse.json(
@@ -27,13 +27,17 @@ export async function POST(req) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
+  let x = "h";
+
+  if (aspectRatio === "16:9") {
+    x = "w";
+  }
+
   const editedUrl = `https://res.cloudinary.com/${
     process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-  }/image/upload/e_gen_restore/e_improve:indoor:40/${imageUrl
+  }/image/upload/ar_${aspectRatio},b_gen_fill,c_pad,${x}_1250/${imageUrl
     .split("/")
     .pop()}`;
-
-  console.log(user.id, imageUrl, editedUrl);
 
   try {
     const image = await prisma.image.create({
@@ -41,7 +45,8 @@ export async function POST(req) {
         userId: user.id,
         originalUrl: imageUrl,
         editedUrl: editedUrl,
-        transformationType: "Restore",
+        prompt: aspectRatio,
+        transformationType: "Fill",
       },
     });
 

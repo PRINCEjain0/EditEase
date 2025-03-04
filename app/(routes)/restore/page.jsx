@@ -1,12 +1,11 @@
 "use client";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
 import { Button } from "@/components/ui/button";
 import { Upload, Download, Wand2, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 
-export default function RecolorPage() {
+export default function RestorePage() {
   const [imageUrl, setImageUrl] = useState(null);
   const [editedUrl, setEditedUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +20,7 @@ export default function RecolorPage() {
       return;
     }
 
-    setIsLoading(true); // Show loader before fetching
+    setIsLoading(true);
 
     try {
       const res = await fetch("/api/restore", {
@@ -32,7 +31,6 @@ export default function RecolorPage() {
 
       if (!res.ok) {
         alert("An error occurred while processing the image");
-
         setIsLoading(false);
         return;
       }
@@ -51,20 +49,21 @@ export default function RecolorPage() {
       };
     } catch (error) {
       alert("An error occurred while processing the image.");
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#0a0f1e] to-[#111936] min-h-screen overflow-auto">
-      <h1 className="pt-28 text-4xl font-bold text-transparent bg-clip-text text-center bg-gradient-to-r from-blue-400 to-purple-500">
+    <div className="bg-gradient-to-br from-[#0a0f1e] to-[#111936] min-h-screen overflow-auto p-4 md:p-8">
+      <h1 className="pt-16 md:pt-28 text-2xl md:text-4xl font-bold text-transparent bg-clip-text text-center bg-gradient-to-r from-blue-400 to-purple-500">
         Restore your Image
       </h1>
 
-      <div className="flex items-center justify-center px-40 mt-8 space-x-52">
+      <div className="flex flex-col md:flex-row items-center justify-center md:px-40 mt-8 space-y-8 md:space-y-0 md:space-x-8 lg:space-x-52">
         {/* Original Image */}
-        <div>
-          <h1 className="text-2xl text-gray-300">Original</h1>
-          <div className="border border-gray-500 w-96 h-72 mt-4 flex justify-center items-center bg-[#0F3460]">
+        <div className="w-full max-w-md px-4 md:px-0">
+          <h1 className="text-xl md:text-2xl text-gray-300">Original</h1>
+          <div className="border border-gray-500 h-48 md:h-72 mt-4 flex justify-center items-center bg-[#0F3460]">
             {imageUrl ? (
               <img
                 src={imageUrl}
@@ -94,13 +93,15 @@ export default function RecolorPage() {
         </div>
 
         {/* Transformed Image */}
-        <div>
-          <h1 className="text-2xl text-gray-300">Transformed</h1>
-          <div className="border border-gray-500 w-96 h-72 mt-4 flex justify-center items-center bg-[#0F3460]">
+        <div className="w-full max-w-md px-4 md:px-0">
+          <h1 className="text-xl md:text-2xl text-gray-300">Transformed</h1>
+          <div className="border border-gray-500 h-48 md:h-72 mt-4 flex justify-center items-center bg-[#0F3460]">
             {isLoading ? (
               <div className="flex flex-col items-center">
-                <Loader2 className="animate-spin text-gray-300 h-12 w-12 mb-2" />
-                <p className="text-gray-300">Processing...</p>
+                <Loader2 className="animate-spin text-gray-300 h-8 w-8 md:h-12 md:w-12 mb-2" />
+                <p className="text-gray-300 text-sm md:text-base">
+                  Processing...
+                </p>
               </div>
             ) : editedUrl ? (
               <img
@@ -109,7 +110,7 @@ export default function RecolorPage() {
                 className="w-full h-full object-contain"
               />
             ) : (
-              <p className="text-gray-300 text-center mt-4">
+              <p className="text-gray-300 text-center mt-4 text-sm md:text-base">
                 Transformed image will appear here.
               </p>
             )}
@@ -118,10 +119,10 @@ export default function RecolorPage() {
       </div>
 
       {/* Buttons */}
-      <div className="flex flex-col items-center mt-8">
+      <div className="flex flex-col items-center mt-8 px-4 md:px-0">
         <Button
           onClick={handleTranformation}
-          className="w-2/3 bg-blue-500 hover:bg-blue-600 transition-all"
+          className="w-full md:w-2/3 bg-blue-500 hover:bg-blue-600 transition-all"
           disabled={isLoading}
         >
           {isLoading ? (
@@ -160,7 +161,7 @@ export default function RecolorPage() {
               alert("Failed to download the image. Try again.");
             }
           }}
-          className="w-2/3 bg-purple-500 hover:bg-purple-600 transition-all mt-8 mb-12"
+          className="w-full md:w-2/3 bg-purple-500 hover:bg-purple-600 transition-all mt-8 mb-12"
           disabled={isLoading}
         >
           {isLoading ? (

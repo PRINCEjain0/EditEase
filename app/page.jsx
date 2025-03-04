@@ -22,9 +22,11 @@ import Image from "next/image";
 import { useEffect } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { createUser } from "@/actions/userAction";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const { isSignedIn } = useAuth();
+  const router = useRouter();
   useEffect(() => {
     if (!isSignedIn) return;
 
@@ -33,14 +35,15 @@ export default function Home() {
     }
     addUse();
   }, [isSignedIn]);
+
   const transformationExamples = [
     {
       id: "recolor",
       title: "Recolor Elements",
       description:
         "Change colors of specific objects while maintaining natural lighting and shadows",
-      beforeImage: "/placeholder.svg?height=400&width=600",
-      afterImage: "/placeholder.svg?height=400&width=600",
+      beforeImage: "/recolor1.jpg",
+      afterImage: "/recolor2.jpg",
       icon: <Paintbrush className="h-5 w-5" />,
     },
     {
@@ -48,8 +51,8 @@ export default function Home() {
       title: "Remove Objects",
       description:
         "Seamlessly remove unwanted objects from your images with AI precision",
-      beforeImage: "/placeholder.svg?height=400&width=600",
-      afterImage: "/placeholder.svg?height=400&width=600",
+      beforeImage: "/remove1.jpg",
+      afterImage: "/remove2.jpg",
       icon: <Eraser className="h-5 w-5" />,
     },
     {
@@ -57,8 +60,8 @@ export default function Home() {
       title: "Fill",
       description:
         "Intelligently fill in missing parts with content-aware technology",
-      beforeImage: "/placeholder.svg?height=400&width=600",
-      afterImage: "/placeholder.svg?height=400&width=600",
+      beforeImage: "/fill1.jpg",
+      afterImage: "/fill2.jpg",
       icon: <PaintBucket className="h-5 w-5" />,
     },
     {
@@ -66,50 +69,55 @@ export default function Home() {
       title: "Replace Objects",
       description:
         "Swap objects in your images while maintaining perfect perspective and lighting",
-      beforeImage: "/placeholder.svg?height=400&width=600",
-      afterImage: "/placeholder.svg?height=400&width=600",
+      beforeImage: "/replace1.jpg",
+      afterImage: "/replace2.jpg",
       icon: <Replace className="h-5 w-5" />,
     },
     {
-      id: "bg-change",
-      title: "Background Change",
+      id: "restore",
+      title: "Restore",
       description:
-        "Transform your image backgrounds to any scene or color you can imagine",
-      beforeImage: "/placeholder.svg?height=400&width=600",
-      afterImage: "/placeholder.svg?height=400&width=600",
+        "Improve clarity and details in blurry or low-resolution images. ",
+      beforeImage: "/restore1.jpg",
+      afterImage: "/restore2.jpg",
       icon: <ImagePlus className="h-5 w-5" />,
     },
   ];
+
   return (
     <>
-      {/* hero section  */}
-      <section className="h-screen flex flex-col items-center justify-center text-center bg-gradient-to-br from-[#0a0f1e] to-[#111936]  ">
+      {/* Hero Section */}
+      <section className="min-h-screen flex flex-col items-center justify-center text-center px-4 bg-gradient-to-br from-[#0a0f1e] to-[#111936]">
         <div className="max-w-5xl flex flex-col items-center">
           <motion.h1
-            className="text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#4a90e2] to-[#a25af7]"
+            className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#4a90e2] to-[#a25af7] text-center"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
           >
             AI-Powered Image Editing
           </motion.h1>
-          <p className="text-xl text-gray-300 mt-4  max-w-3xl">
+          <p className="text-base md:text-xl text-gray-300 mt-4 max-w-3xl text-center">
             Harness the power of advanced AI to remove objects, change colors,
-            replace elements, and transform backgrounds with just one click.
+            replace elements, and Restore images with just one click.
           </p>
 
           <motion.button
             whileHover={{ scale: 1.1 }}
-            className=" text-white px-6 py-3 text-lg font-semibold rounded-lg shadow-lg bg-blue-600 hover:bg-blue-800 mt-8"
+            className="text-white px-4 py-2 md:px-6 md:py-3 text-base md:text-lg font-semibold rounded-lg shadow-lg bg-blue-600 hover:bg-blue-800 mt-8"
+            onClick={() => {
+              router.replace("/recolor");
+            }}
           >
             Try Now
           </motion.button>
         </div>
       </section>
-      {/* features section  */}
-      <section className=" bg-gradient-to-b from-blue-900 to-black text-center">
+
+      {/* Features Section */}
+      <section className="bg-gradient-to-b from-blue-900 to-black text-center px-4 py-16 md:p-28">
         <motion.div
-          className=" flex flex-col items-center justify-center p-28"
+          className="flex flex-col items-center justify-center"
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
@@ -117,14 +125,14 @@ export default function Home() {
           <p className="text-blue-300 bg-blue-500/20 rounded-lg px-2 py-1">
             Powerful Features
           </p>
-          <h2 className="text-5xl text-white font-bold tracking-tighter mt-4">
+          <h2 className="text-3xl md:text-5xl text-white font-bold tracking-tighter mt-4">
             Transform Images Like Never Before
           </h2>
-          <p className="text-xl text-gray-400 mt-4 max-w-3xl">
+          <p className="text-base md:text-xl text-gray-400 mt-4 max-w-3xl text-center">
             Our AI-powered tools make complex image editing simple and
             accessible to everyone.
           </p>
-          <div className="grid grid-cols-3 gap-8 mt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
             {[
               {
                 title: "Color Transformation",
@@ -151,9 +159,9 @@ export default function Home() {
                 icon: <Replace className="h-10 w-10 text-green-400" />,
               },
               {
-                title: "Background Change",
+                title: "Image Restore",
                 description:
-                  "Swap backgrounds or remove them entirely with perfect edge detection",
+                  "Improve clarity and details in blurry or low-resolution images.",
                 icon: <ImagePlus className="h-10 w-10 text-yellow-400" />,
               },
               {
@@ -184,15 +192,15 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* demo section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-900 text-white">
-        <div className="container px-4 md:px-6">
+      {/* Demo Section */}
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-900 text-white px-4">
+        <div className="container mx-auto">
           <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
                 See the Magic in Action
               </h2>
-              <p className="max-w-[900px] text-gray-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+              <p className="max-w-[900px] text-gray-400 text-base md:text-xl">
                 Explore our transformation examples and see what our AI can do
                 for your images.
               </p>
@@ -200,8 +208,8 @@ export default function Home() {
           </div>
 
           <Tabs defaultValue="recolor" className="w-full">
-            <div className="flex justify-center mb-8">
-              <TabsList className="bg-gray-800">
+            <div className="flex justify-center mb-8 overflow-x-auto">
+              <TabsList className="bg-gray-800 flex-wrap">
                 {transformationExamples.map((example) => (
                   <TabsTrigger
                     key={example.id}
@@ -210,7 +218,9 @@ export default function Home() {
                   >
                     <div className="flex items-center gap-2">
                       {example.icon}
-                      <span>{example.title.split(" ")[0]}</span>
+                      <span className="hidden sm:inline">
+                        {example.title.split(" ")[0]}
+                      </span>
                     </div>
                   </TabsTrigger>
                 ))}
@@ -220,25 +230,28 @@ export default function Home() {
             {transformationExamples.map((example) => (
               <TabsContent key={example.id} value={example.id} className="mt-0">
                 <div className="grid md:grid-cols-2 gap-8 items-center">
-                  <div className="space-y-4 ml-12">
+                  <div className="space-y-4 text-center md:text-left md:ml-12">
                     <h3 className="text-2xl font-bold">{example.title}</h3>
                     <p className="text-gray-400">{example.description}</p>
-                    <Button className="bg-blue-600 hover:bg-blue-700">
+                    <Button
+                      className="bg-blue-600 hover:bg-blue-700"
+                      onClick={() => router.replace(`/${example.id}`)}
+                    >
                       Try {example.title.split(" ")[0]} Now
                     </Button>
                   </div>
-                  <div className="relative mr-8">
+                  <div className="relative">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="relative rounded-lg overflow-hidden border border-gray-800">
                         <div className="absolute top-2 left-2 bg-black/70 text-xs px-2 py-1 rounded">
                           Before
                         </div>
                         <Image
-                          src={"/a.jpg"}
+                          src={example.beforeImage}
                           alt={`Before ${example.title}`}
                           width={300}
                           height={200}
-                          className="object-cover w-full aspect-[4/3]"
+                          className="object-contain w-full aspect-[4/3]"
                         />
                       </div>
                       <div className="relative rounded-lg overflow-hidden border border-gray-800">
@@ -246,11 +259,11 @@ export default function Home() {
                           After
                         </div>
                         <Image
-                          src={"/a2.jpg"}
+                          src={example.afterImage}
                           alt={`After ${example.title}`}
                           width={300}
                           height={200}
-                          className="object-cover w-full aspect-[4/3]"
+                          className="object-contain w-full aspect-[4/3]"
                         />
                       </div>
                     </div>
@@ -271,20 +284,22 @@ export default function Home() {
       </section>
 
       {/* How It Works Section */}
-      <section className="bg-black ">
-        <div className="p-24">
+      <section className="bg-black px-4 py-16 md:p-24">
+        <div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
             className="flex flex-col items-center justify-center text-center text-white"
           >
-            <h1 className="text-5xl text-white font-bold ">How It Works</h1>
-            <p className="text-gray-400 text-xl mt-4">
+            <h1 className="text-3xl md:text-5xl text-white font-bold">
+              How It Works
+            </h1>
+            <p className="text-gray-400 text-base md:text-xl mt-4">
               Transform your images in three simple steps
             </p>
           </motion.div>
-          <div className="grid grid-cols-3 gap-8 mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
             {[
               {
                 title: "Upload Your Image",
@@ -313,17 +328,16 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: index * 0.1 }}
-                className="flex flex-col items-center justify-center space-y-4
-                text-center"
+                className="flex flex-col items-center justify-center space-y-4 text-center"
               >
-                <h1 className="text-3xl text-white ">{step.step}</h1>
+                <h1 className="text-3xl text-white">{step.step}</h1>
                 <motion.div
                   className="rounded-full bg-blue-900/20 p-4 mb-4 mt-8"
                   whileHover={{ scale: 1.1, rotate: 360 }}
                 >
                   {step.icon}
                 </motion.div>
-                <h3 className="text-xl font-bold text-white ">{step.title}</h3>
+                <h3 className="text-xl font-bold text-white">{step.title}</h3>
                 <p className="text-gray-400">{step.description}</p>
               </motion.div>
             ))}
@@ -331,38 +345,57 @@ export default function Home() {
         </div>
       </section>
 
-      {/* //  footer */}
       <hr className="border-gray-400" />
-      <section className="bg-black text-white pt-8 pb-8">
-        <div className="flex justify-center items-center space-x-6 mt-4 md:mt-0">
-          <a
-            href="https://twitter.com/yourhandle"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Twitter className="w-6 h-6 hover:text-blue-500 transition-colors" />
-          </a>
-          <a
-            href="https://linkedin.com/in/yourprofile"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Linkedin className="w-6 h-6 hover:text-blue-700 transition-colors" />
-          </a>
-          <a
-            href="https://twitter.com/yourhandle"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Github className="w-6 h-6 hover:text-blue-500 transition-colors" />
-          </a>
-          <a
-            href="https://linkedin.com/in/yourprofile"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Instagram className="w-6 h-6 hover:text-blue-700 transition-colors" />
-          </a>
+      <section className="bg-black text-white py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="text-center md:text-left mb-4 md:mb-0">
+              <h4 className="text-xl font-bold mb-2">AI Image Editor</h4>
+              <p className="text-gray-400 text-sm">
+                Transform your images with powerful AI tools
+              </p>
+            </div>
+            <div className="flex justify-center items-center space-x-6">
+              <a
+                href="https://x.com/princej89080399"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-500 transition-colors"
+              >
+                <Twitter className="w-6 h-6" />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/prince-jain-732328251/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-700 transition-colors"
+              >
+                <Linkedin className="w-6 h-6" />
+              </a>
+              <a
+                href="https://github.com/PRINCEjain0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                <Github className="w-6 h-6" />
+              </a>
+              <a
+                href="https://www.instagram.com/prince_jain9761/?hl=en"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-pink-500 transition-colors"
+              >
+                <Instagram className="w-6 h-6" />
+              </a>
+            </div>
+          </div>
+          <div className="mt-8 text-center text-gray-500 text-sm">
+            <p>
+              &copy; {new Date().getFullYear()} AI Image Editor. All rights
+              reserved.
+            </p>
+          </div>
         </div>
       </section>
     </>

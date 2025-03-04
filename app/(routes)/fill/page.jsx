@@ -1,15 +1,12 @@
 "use client";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Upload, Download, Wand2, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 
-export default function RecolorPage() {
+export default function FillPage() {
   const [imageUrl, setImageUrl] = useState(null);
-  const [text, setText] = useState("");
-  const [color, setColor] = useState("");
+  const [aspectRatio, setAspectRatio] = useState("");
   const [editedUrl, setEditedUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -17,26 +14,27 @@ export default function RecolorPage() {
     document.body.style.overflow = "auto";
   }, [imageUrl]);
 
-  const handleTranformation = async () => {
-    if (!imageUrl || !text || !color) {
-      alert("Please enter a prompt and upload an image.");
+  const handleTransformation = async () => {
+    if (!imageUrl || !aspectRatio) {
+      alert("Please select an aspect ratio and upload an image.");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const res = await fetch("/api/recolor", {
+      const res = await fetch("/api/fill", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageUrl, text, color }),
+        body: JSON.stringify({ imageUrl, aspectRatio }),
       });
 
       if (!res.ok) {
-        alert("An error occurred while processing the image");
+        alert("An error occurred while processing the image.");
         setIsLoading(false);
         return;
       }
+
       const data = await res.json();
       const newImageUrl = data.image.editedUrl;
 
@@ -52,56 +50,40 @@ export default function RecolorPage() {
       };
     } catch (error) {
       alert("An error occurred while processing the image.");
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#0a0f1e] to-[#111936] min-h-screen overflow-auto px-4 md:px-10 lg:px-20">
-      <h1 className="pt-20 md:pt-28 text-2xl md:text-4xl font-bold text-transparent bg-clip-text text-center bg-gradient-to-r from-blue-400 to-purple-500">
-        Recolor Your Image
+    <div className="bg-gradient-to-br from-[#0a0f1e] to-[#111936] min-h-screen overflow-auto p-4 md:p-8">
+      <h1 className="pt-16 md:pt-28 text-2xl md:text-4xl font-bold text-transparent bg-clip-text text-center bg-gradient-to-r from-blue-400 to-purple-500">
+        Fill Your Image
       </h1>
 
-      {/* Input Fields */}
-      <div className="flex flex-col md:flex-row justify-between items-center mt-8 space-y-4 md:space-y-0 md:space-x-8">
-        <div className="flex flex-col w-full md:w-1/2">
-          <Label
-            htmlFor="object"
-            className="text-gray-300 text-base md:text-xl mb-2"
-          >
-            Object to Recolor
-          </Label>
-          <Input
-            id="object"
-            placeholder="e.g. car, sky, etc."
-            className="bg-[#0F3460] text-white w-full h-10 md:h-12 border border-gray-500"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-col w-full md:w-1/2">
-          <Label
-            htmlFor="color"
-            className="text-gray-300 text-base md:text-xl mb-2"
-          >
-            New Color
-          </Label>
-          <Input
-            id="color"
-            placeholder="e.g. blue, red, etc."
-            className="bg-[#0F3460] text-white w-full h-10 md:h-12 border border-gray-500"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-          />
-        </div>
+      {/* Aspect Ratio Selection */}
+      <div className="flex flex-col md:flex-row justify-center mt-8 space-y-4 md:space-y-0 md:space-x-8">
+        <Button
+          onClick={() => setAspectRatio("9:16")}
+          className={`w-full md:w-40 h-10 md:h-12 ${
+            aspectRatio === "9:16" ? "bg-blue-600" : "bg-gray-700"
+          } hover:bg-blue-700 transition-all`}
+        >
+          Portrait (9:16)
+        </Button>
+        <Button
+          onClick={() => setAspectRatio("16:9")}
+          className={`w-full md:w-40 h-10 md:h-12 ${
+            aspectRatio === "16:9" ? "bg-blue-600" : "bg-gray-700"
+          } hover:bg-blue-700 transition-all`}
+        >
+          Landscape (16:9)
+        </Button>
       </div>
 
-      {/* Image Upload and Preview */}
-      <div className="flex flex-col md:flex-row items-center justify-center mt-8 space-y-8 md:space-y-0 md:space-x-8 lg:space-x-20">
+      <div className="flex flex-col md:flex-row items-center justify-center md:px-40 mt-8 space-y-8 md:space-y-0 md:space-x-8 lg:space-x-52">
         {/* Original Image */}
-        <div className="w-full md:w-1/2 max-w-md">
-          <h1 className="text-xl md:text-2xl text-gray-300 text-center md:text-left">
-            Original
-          </h1>
+        <div className="w-full max-w-md px-4 md:px-0">
+          <h1 className="text-xl md:text-2xl text-gray-300">Original</h1>
           <div className="border border-gray-500 h-48 md:h-72 mt-4 flex justify-center items-center bg-[#0F3460]">
             {imageUrl ? (
               <img
@@ -132,14 +114,12 @@ export default function RecolorPage() {
         </div>
 
         {/* Transformed Image */}
-        <div className="w-full md:w-1/2 max-w-md">
-          <h1 className="text-xl md:text-2xl text-gray-300 text-center md:text-left">
-            Transformed
-          </h1>
+        <div className="w-full max-w-md px-4 md:px-0">
+          <h1 className="text-xl md:text-2xl text-gray-300">Transformed</h1>
           <div className="border border-gray-500 h-48 md:h-72 mt-4 flex justify-center items-center bg-[#0F3460]">
             {isLoading ? (
               <div className="flex flex-col items-center">
-                <Loader2 className="animate-spin text-gray-300 h-8 md:h-12 w-8 md:w-12 mb-2" />
+                <Loader2 className="animate-spin text-gray-300 h-8 w-8 md:h-12 md:w-12 mb-2" />
                 <p className="text-gray-300 text-sm md:text-base">
                   Processing...
                 </p>
@@ -151,7 +131,7 @@ export default function RecolorPage() {
                 className="w-full h-full object-contain"
               />
             ) : (
-              <p className="text-gray-300 text-center text-sm md:text-base mt-4">
+              <p className="text-gray-300 text-center mt-4 text-sm md:text-base">
                 Transformed image will appear here.
               </p>
             )}
@@ -160,9 +140,9 @@ export default function RecolorPage() {
       </div>
 
       {/* Buttons */}
-      <div className="flex flex-col items-center mt-8 space-y-4">
+      <div className="flex flex-col items-center mt-8 px-4 md:px-0">
         <Button
-          onClick={handleTranformation}
+          onClick={handleTransformation}
           className="w-full md:w-2/3 bg-blue-500 hover:bg-blue-600 transition-all"
           disabled={isLoading}
         >
@@ -202,7 +182,7 @@ export default function RecolorPage() {
               alert("Failed to download the image. Try again.");
             }
           }}
-          className="w-full md:w-2/3 bg-purple-500 hover:bg-purple-600 transition-all"
+          className="w-full md:w-2/3 bg-purple-500 hover:bg-purple-600 transition-all mt-8 mb-12"
           disabled={isLoading}
         >
           {isLoading ? (

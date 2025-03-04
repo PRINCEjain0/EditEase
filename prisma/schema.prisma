@@ -23,6 +23,7 @@ model Image {
   originalUrl String  
   editedUrl   String? 
   prompt      String? 
+  transformationType String?
   createdAt   DateTime @default(now())
   user        user    @relation(fields: [userId], references: [id])
 }
